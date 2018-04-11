@@ -148,6 +148,9 @@ report(Metric, DataPointList, Level) ->
     ?log(debug, "Report metric ~p = ~p~n", [Metric, DataPointList]),
     %% Report the value and setup a new refresh timer.
     DPStr = [[" ", thing_to_list(DataPoint),"=",value(Value)] ||
-             {DataPoint, Value} <- DataPointList ],
-    Str = [?MODULE_STRING, " ", metric_to_string(Metric), ":", DPStr, $\n],
-    log(Level, lists:flatten(Str)).
+             {DataPoint, Value} <- DataPointList, Value /= 0 ],
+    case DPStr of 
+        [] -> ok;
+        List -> Str = [?MODULE_STRING, " ", metric_to_string(Metric), ":", List, $\n],
+        log(Level, lists:flatten(Str))
+    end.
